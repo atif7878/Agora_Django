@@ -5,8 +5,6 @@ let UID = sessionStorage.getItem('UID')
 
 let NAME = sessionStorage.getItem('name')
 
-console.log('Session storage values in room:', {APP_ID, TOKEN, CHANNEL, UID, NAME})
-
 const client = AgoraRTC.createClient({mode:'rtc', codec:'vp8'})
 
 let localTracks = []
@@ -52,11 +50,6 @@ let joinAndDisplayLocalStream = async () => {
     });
 
     const data = await response.json();
-    if (data.success) {
-        console.log('Member added successfully');
-    } else {
-        console.error('Failed to add member:', data.error);
-    }
 }
 
 let handleUserJoined = async (user, mediaType) => {
@@ -103,7 +96,6 @@ let leaveAndRemoveLocalStream = async () => {
 }
 
 let toggleCamera = async (e) => {
-    console.log('TOGGLE CAMERA TRIGGERED')
     if(localTracks[1].muted){
         await localTracks[1].setMuted(false)
         e.target.style.backgroundColor = '#fff'
@@ -114,7 +106,6 @@ let toggleCamera = async (e) => {
 }
 
 let toggleMic = async (e) => {
-    console.log('TOGGLE MIC TRIGGERED')
     if(localTracks[0].muted){
         await localTracks[0].setMuted(false)
         e.target.style.backgroundColor = '#fff'
@@ -125,7 +116,6 @@ let toggleMic = async (e) => {
 }
 
 let createMember = async () => {
-    console.log("Creating member with", {name: NAME, room_name: CHANNEL, UID: UID});
     let response = await fetch('/create_member/', {
         method: 'POST',
         headers: {
@@ -134,20 +124,16 @@ let createMember = async () => {
         body: JSON.stringify({'name': NAME, 'room_name': CHANNEL, 'UID': UID})
     });
     let member = await response.json();
-    console.log("Member created:", member);
     return member;
 }
 
 let getMember = async (user) => {
-    console.log("Getting member for UID:", user.uid);
     let response = await fetch(`/get_member/?UID=${user.uid}&room_name=${CHANNEL}`);
     let member = await response.json();
-    console.log("Member fetched:", member);
     return member;
 }
 
 let deleteMember = async () => {
-    console.log("Deleting member", {name: NAME, room_name: CHANNEL, UID: UID})
     let response = await fetch('/delete_member/', {
         method: 'POST',
         headers: {
@@ -156,7 +142,6 @@ let deleteMember = async () => {
         body: JSON.stringify({'name': NAME, 'room_name': CHANNEL, 'UID': UID})
     })
     let member = await response.json()
-    console.log("Member deleted:", member)
 }
 
 window.addEventListener("beforeunload", deleteMember);
