@@ -19,3 +19,5 @@ staticfiles/
 
 # Media files
 media/
+/y
+/y.pub
